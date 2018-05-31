@@ -70,12 +70,38 @@ export default {
       }
     },
     clearing (needCleanBlock) {
+      this.xx = 1
+      this.yy = 3
       for (const key of needCleanBlock) {
         this.ctx.clearRect(this.x + (parseInt(key % 10) * 32), this.y + (parseInt(key / 10) * 32), 30, 30)
         delete this.blockColors[key]
       }
       this.addSource(needCleanBlock)
-      this.blockDown(needCleanBlock)
+      setTimeout(() => {
+        this.blockDown(needCleanBlock)
+        window.requestAnimationFrame(this.draw)
+      }, 300)
+    },
+    draw () {
+      this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+
+      this.ctx.fillStyle = '#FFF8DC'
+      this.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight)
+
+      this.ctx.strokeStyle = '#ccc'
+      this.ctx.rect(this.x, this.y, 320, 320)
+      this.ctx.stroke()
+
+      for (const i in _.range(10)) {
+        for (const j in _.range(10)) {
+          let index = parseInt(i + j)
+          if (_.has(this.blockColors, index)) {
+            this.ctx.fillStyle = this.blockColors[index]
+            // this.blockColors[index] = this.ctx.fillStyle
+            this.ctx.fillRect(this.x + (j * 32), this.y + (i * 32), 30, 30)
+          }
+        }
+      }
     },
     addSource (needCleanBlock) {
       let num = needCleanBlock.length
